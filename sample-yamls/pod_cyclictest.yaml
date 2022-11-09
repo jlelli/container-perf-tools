@@ -9,20 +9,21 @@ metadata:
 spec:
   # Map to the correct performance class in the cluster (from PAO)
   # Identify class names with "oc get runtimeclass"
-  runtimeClassName: performance-custom-class
+  runtimeClassName: performance-openshift-node-performance-profile
   restartPolicy: Never 
   containers:
   - name: container-perf-tools 
-    image: quay.io/jianzzha/perf-tools
+    #image: quay.io/jianzzha/perf-tools
+    image: quay.io/bwensley/cyclictest
     imagePullPolicy: IfNotPresent
     # Request and Limits must be identical for the Pod to be assigned to the QoS Guarantee
     resources:
       requests:
         memory: "200Mi"
-        cpu: "4"
+        cpu: "16"
       limits:
         memory: "200Mi"
-        cpu: "4"
+        cpu: "16"
     env:
     - name: tool
       value: "cyclictest"
@@ -53,6 +54,6 @@ spec:
   - name: cstate
     hostPath:
       path: /dev/cpu_dma_latency
-  nodeSelector:
-    node-role.kubernetes.io/worker-rt: ""
+  #nodeSelector:
+  #  node-role.kubernetes.io/worker-rt: ""
   
