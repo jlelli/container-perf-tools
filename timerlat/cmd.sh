@@ -72,11 +72,6 @@ echo "allowed cpu list: ${cpulist}"
 uname=`uname -nr`
 echo "$uname"
 
-cpulist=`convert_number_range ${cpulist} | tr , '\n' | sort -n | uniq`
-
-declare -a cpus
-cpus=(${cpulist})
-
 if [ "${DISABLE_CPU_BALANCE:-n}" == "y" ]; then
     disable_balance
 fi
@@ -92,29 +87,7 @@ if [[ "$stress" == "true" ]]; then
     done
 fi
 
-cyccore=${cpus[1]}
-cindex=2
-ccount=1
-while (( $cindex < ${#cpus[@]} )); do
-    cyccore="${cyccore},${cpus[$cindex]}"
-    cindex=$(($cindex + 1))
-    ccount=$(($ccount + 1))
-done
-
-sibling=`cat /sys/devices/system/cpu/cpu${cpus[0]}/topology/thread_siblings_list | awk -F '[-,]' '{print $2}'`
-if [[ "${sibling}" =~ ^[0-9]+$ ]]; then
-    echo "removing cpu${sibling} from the cpu list because it is a sibling of cpu${cpus[0]} which will be the mainaffinity"
-    cyccore=${cyccore//,$sibling/}
-    ccount=$(($ccount - 1))
-fi
-echo "new cpu list: ${cyccore}"
-
-if [[ "$release" = "7" ]]; then
-    extra_opt="${extra_opt} -n"
-fi
-
-#command="cyclictest -q -D ${DURATION} -p ${rt_priority} -t ${ccount} -a ${cyccore} -h 30 -i ${INTERVAL} --mainaffinity ${cpus[0]} -m ${extra_opt}"
-command="rtla timerlat hist --auto ${MAXLATENCY} --duration ${DURATION} --cpus ${cyccore}"
+command="rtla timerlat hist --auto ${MAXLATENCY} --duration ${DURATION} --cpus ${cpulist}"
 
 echo "running cmd: ${command}"
 if [ "${manual:-n}" == "n" ]; then
