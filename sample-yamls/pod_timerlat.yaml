@@ -25,14 +25,11 @@ spec:
         cpu: "16"
     env:
     - name: tool
-      value: "cyclictest"
+      value: "timerlat"
     - name: DURATION
       value: "1h"
-    # cyclictest should run with an RT Priority of 95 when testing for RAN DU
-    - name: rt_priority
-      value: "95"
-    - name: INTERVAL
-      value: "1000"
+    - name: MAXLATENCY
+      value: "20"
     - name: delay
       value: "0"
     # # Following setting not required in OCP4.6+

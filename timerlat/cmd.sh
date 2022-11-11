@@ -2,6 +2,7 @@
 
 # env vars:
 #   DURATION (default "24h")
+#   MAXLATENCY (default 20 (us))
 #   DISABLE_CPU_BALANCE (default "n", choice y/n)
 #   INTERVAL (default "1000")
 #   stress (default "false", choices false/true)
@@ -31,6 +32,10 @@ echo "#####################################"
 echo "**** uid: $UID ****"
 if [[ -z "${DURATION}" ]]; then
     DURATION="24h"
+fi
+
+if [[ -z "${MAXLATENCY}" ]]; then
+    MAXLATENCY="20"
 fi
 
 if [[ -z "${INTERVAL}" ]]; then
@@ -109,7 +114,7 @@ if [[ "$release" = "7" ]]; then
 fi
 
 #command="cyclictest -q -D ${DURATION} -p ${rt_priority} -t ${ccount} -a ${cyccore} -h 30 -i ${INTERVAL} --mainaffinity ${cpus[0]} -m ${extra_opt}"
-command="rtla timerlat hist -a 20 --cpus ${cyccore}"
+command="rtla timerlat hist --auto ${MAXLATENCY} --duration ${DURATION} --cpus ${cyccore}"
 
 echo "running cmd: ${command}"
 if [ "${manual:-n}" == "n" ]; then
