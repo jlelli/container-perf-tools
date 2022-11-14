@@ -4,9 +4,8 @@
 #   DURATION (default "24h")
 #   MAXLATENCY (default 20 (us))
 #   DISABLE_CPU_BALANCE (default "n", choice y/n)
-#   INTERVAL (default "1000")
+#   EXTRA (default "")
 #   stress (default "false", choices false/true)
-#   rt_priority (default "1")
 #   delay (default 0, specify how many seconds to delay before test start)
 
 source common-libs/functions.sh
@@ -38,8 +37,8 @@ if [[ -z "${MAXLATENCY}" ]]; then
     MAXLATENCY="20"
 fi
 
-if [[ -z "${INTERVAL}" ]]; then
-    INTERVAL="1000"
+if [[ -z "${EXTRA}" ]]; then
+    EXTRA=""
 fi
 
 if [[ -z "${stress}" ]]; then
@@ -48,16 +47,6 @@ elif [[ "${stress}" != "stress-ng" && "${stress}" != "true" ]]; then
     stress="false"
 else
     stress="true"
-fi
-
-if [[ -z "${rt_priority}" ]]; then
-        rt_priority=1
-elif [[ "${rt_priority}" =~ ^[0-9]+$ ]]; then
-    if (( rt_priority > 99 )); then
-        rt_priority=99
-    fi
-else
-    rt_priority=1
 fi
 
 release=$(cat /etc/os-release | sed -n -r 's/VERSION_ID="(.).*/\1/p')
@@ -87,7 +76,7 @@ if [[ "$stress" == "true" ]]; then
     done
 fi
 
-command="rtla timerlat hist --auto ${MAXLATENCY} --duration ${DURATION} --cpus ${cpulist}"
+command="rtla timerlat hist --auto ${MAXLATENCY} --duration ${DURATION} --cpus ${cpulist} --dma-latency 0 ${EXTRA}"
 
 echo "running cmd: ${command}"
 if [ "${manual:-n}" == "n" ]; then
