@@ -30,8 +30,8 @@ spec:
       value: "1h"
     - name: MAXLATENCY
       value: "20"
-    #- name: EXTRA
-    #  value: "-e sched:sched_switch -e sched:sched_wakeup -e sched:sched_migrate_task"
+    - name: EXTRA
+      value: "-e sched:sched_switch -e sched:sched_wakeup -e sched:sched_migrate_task -e irq -e irq_vectors -e timer"
     - name: delay
       value: "0"
     # # Following setting not required in OCP4.6+
