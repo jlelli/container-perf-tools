@@ -98,18 +98,21 @@ if [[ "${sibling}" =~ ^[0-9]+$ ]]; then
 fi
 echo "new cpu list: ${cyccore}"
 
-command="rtla timerlat hist --auto ${MAXLATENCY} --duration ${DURATION} --cpus ${cyccore} --dma-latency 0 ${EXTRA}"
+export CPUS=${cyccore}
+export MAINCPUS=${cpus[0]}
 
-echo "running cmd: ${command}"
 if [ "${manual:-n}" == "n" ]; then
     if [ "${delay:-0}" != "0" ]; then
         echo "sleep ${delay} before test"
         sleep ${delay}
     fi
-    $command
+    echo "now running ..."
+    python -c 'import os; maxlat=str(os.getenv("MAXLATENCY")); duration=str(os.getenv("DURATION")); cpus=os.getenv("CPUS"); maincpus=str(os.getenv("MAINCPUS")); extra=os.getenv("EXTRA"); os.system("timerlat hist --debug --auto "+maxlat+" --duration "+duration+" --cpus "+cpus+" -H "+maincpus+" --dma-latency 0 " + extra)'
 else
     sleep infinity
 fi
+
+echo "done! if a trace was collected you can retreive it with 'oc rsync timerlat:/root/timerlat_trace.txt .'"
 
 sleep infinity
 

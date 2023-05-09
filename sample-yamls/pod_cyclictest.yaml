@@ -35,7 +35,7 @@ spec:
     - name: INTERVAL
       value: "1000"
     - name: delay
-      value: "0"
+      value: "60"
     # # Following setting not required in OCP4.6+
     # - name: DISABLE_CPU_BALANCE
     #   value: "y"

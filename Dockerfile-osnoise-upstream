@@ -6,7 +6,7 @@ RUN dnf -y update && dnf -y install libtraceevent-devel libtracefs-devel python3
 RUN wget https://bristot.me/files/rtla/tarball/rtla-6.3.0.tar.bz2 \
     && tar -jxvf rtla-6.3.0.tar.bz2 && cd rtla-6.3.0 && make \
     && make install && cd && rm -rf rtla-6.3.0
-RUN dnf -y install which tmux python3 numactl-devel kernel-devel kernel-tools numactl-libs \
+RUN dnf -y install rsync which tmux python3 numactl-devel kernel-devel kernel-tools numactl-libs \
     && ln -s $(which python3) /usr/local/bin/python \
     && dnf clean all && rm -rf /var/cache/yum \
     && curl -L -o /root/dumb-init https://github.com/Yelp/dumb-init/releases/download/v1.2.2/dumb-init_1.2.2_amd64 \

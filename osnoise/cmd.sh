@@ -61,6 +61,11 @@ echo "allowed cpu list: ${cpulist}"
 uname=`uname -nr`
 echo "$uname"
 
+cpulist=`convert_number_range ${cpulist} | tr , '\n' | sort -n | uniq`
+
+declare -a cpus
+cpus=(${cpulist})
+
 if [ "${DISABLE_CPU_BALANCE:-n}" == "y" ]; then
     disable_balance
 fi
@@ -76,18 +81,38 @@ if [[ "$stress" == "true" ]]; then
     done
 fi
 
-command="rtla osnoise hist --auto ${MAXLATENCY} --duration ${DURATION} --cpus ${cpulist} ${EXTRA}"
+cyccore=${cpus[1]}
+cindex=2
+ccount=1
+while (( $cindex < ${#cpus[@]} )); do
+    cyccore="${cyccore},${cpus[$cindex]}"
+    cindex=$(($cindex + 1))
+    ccount=$(($ccount + 1))
+done
 
-echo "running cmd: ${command}"
+sibling=`cat /sys/devices/system/cpu/cpu${cpus[0]}/topology/thread_siblings_list | awk -F '[-,]' '{print $2}'`
+if [[ "${sibling}" =~ ^[0-9]+$ ]]; then
+    echo "removing cpu${sibling} from the cpu list because it is a sibling of cpu${cpus[0]} which will be the mainaffinity"
+    cyccore=${cyccore//,$sibling/}
+    ccount=$(($ccount - 1))
+fi
+echo "new cpu list: ${cyccore}"
+
+#command="rtla osnoise hist --auto ${MAXLATENCY} --duration ${DURATION} --cpus ${cpulist} ${EXTRA}"
+export CPUS=${cyccore}
+
 if [ "${manual:-n}" == "n" ]; then
     if [ "${delay:-0}" != "0" ]; then
         echo "sleep ${delay} before test"
         sleep ${delay}
     fi
-    $command
+    echo "now running ..."
+    python -c 'import os; maxlat=str(os.getenv("MAXLATENCY")); duration=str(os.getenv("DURATION")); cpus=os.getenv("CPUS"); extra=os.getenv("EXTRA"); os.system("osnoise hist --auto "+maxlat+" --duration "+duration+" --cpus "+cpus+" " + extra)'
 else
     sleep infinity
 fi
+
+echo "done! if a trace was collected you can retreive it with 'oc rsync osnoise:/root/osnoise_trace.txt .'"
 
 sleep infinity
 
