@@ -107,7 +107,7 @@ if [ "${manual:-n}" == "n" ]; then
         sleep ${delay}
     fi
     echo "now running ..."
-    python -c 'import os; maxlat=str(os.getenv("MAXLATENCY")); duration=str(os.getenv("DURATION")); cpus=os.getenv("CPUS"); maincpus=str(os.getenv("MAINCPUS")); extra=os.getenv("EXTRA"); os.system("timerlat hist --debug --auto "+maxlat+" --duration "+duration+" --cpus "+cpus+" -H "+maincpus+" --dma-latency 0 " + extra)'
+    python -c 'import os; maxlat=str(os.getenv("MAXLATENCY")); duration=str(os.getenv("DURATION")); cpus=os.getenv("CPUS"); maincpus=str(os.getenv("MAINCPUS")); extra=os.getenv("EXTRA"); os.system("timerlat hist --auto "+maxlat+" --duration "+duration+" --cpus "+cpus+" -H "+maincpus+" --dma-latency 0 --dump-task " + extra)'
 else
     sleep infinity
 fi

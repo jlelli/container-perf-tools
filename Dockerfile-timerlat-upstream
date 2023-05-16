@@ -3,8 +3,8 @@ USER root
 COPY timerlat/cmd.sh /root
 COPY common-libs /root/common-libs
 RUN dnf -y update && dnf -y install libtraceevent-devel libtracefs-devel python3-docutils git make gcc wget bzip2 && dnf clean all
-RUN wget https://bristot.me/files/rtla/tarball/rtla-6.4.0-rc1-rtla0.tar.bz2 \
-    && tar -jxvf rtla-6.4.0-rc1-rtla0.tar.bz2 && cd rtla-6.4.0-rc1-rtla0 && make \
+RUN wget https://bristot.me/files/rtla/tarball/rtla-6.4.0-rc1-rtla2.tar.bz2 \
+    && tar -jxvf rtla-6.4.0-rc1-rtla2.tar.bz2 && cd rtla-6.4.0-rc1-rtla2 && make \
     && make install && cd && rm -rf rtla-*
 RUN dnf -y install which rsync tmux python3 numactl-devel kernel-devel kernel-tools numactl-libs \
     && ln -s $(which python3) /usr/local/bin/python \
