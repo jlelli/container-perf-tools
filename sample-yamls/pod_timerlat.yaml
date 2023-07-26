@@ -28,11 +28,16 @@ spec:
     - name: tool
       value: "timerlat"
     - name: DURATION
-      value: "1h"
+      value: "12h"
     - name: MAXLATENCY
-      value: "20"
+      value: "18"
     - name: EXTRA
-      value: "-e sched:sched_switch -e sched:sched_wakeup --trigger='stacktrace if comm ~ \"kworker*\"' -e sched:sched_migrate_task -e irq -e irq_vectors -e timer -e workqueue"
+      #value: " "
+      value: "-e sched:sched_switch -e sched:sched_wakeup -e sched:sched_migrate_task -e irq -e irq_vectors -e timer -e workqueue -e ipi:ipi_entry -e ipi:ipi_exit -e ipi:ipi_raise -e ipi:ipi_send_cpu --trigger='stacktrace' -e ipi:ipi_send_cpumask --trigger='stacktrace' -e context_tracking"
+      #value: "-e sched:sched_switch -e sched:sched_wakeup -e sched:sched_migrate_task -e irq -e irq_vectors -e timer -e workqueue -e ipi"
+      #value: "-e sched:sched_switch -e sched:sched_wakeup -e sched:sched_migrate_task -e irq -e irq_vectors -e timer -e workqueue -e probe:sched_rt_handler --trigger='stacktrace' -e probe:do_start_rt_bandwidth --trigger='stacktrace' -e ipi"
+      #value: "-e sched:sched_switch -e sched:sched_wakeup --trigger='stacktrace if comm ~ \"kworker*\"' -e sched:sched_migrate_task -e irq -e irq_vectors -e timer -e workqueue"
+      #value: "-e sched:sched_switch -e sched:sched_wakeup --trigger='stacktrace' -e sched:sched_migrate_task -e irq -e irq_vectors -e timer -e workqueue -e ipi -e rcu:rcu_quiescent_state_report -e rcu:rcu_exp_grace_period -e rcu:rcu_exp_funnel_lock -e rcu:rcu_dyntick"
     - name: delay
       value: "60"
     # # Following setting not required in OCP4.6+

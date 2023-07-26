@@ -32,9 +32,9 @@ spec:
     - name: MAXLATENCY
       value: "20"
     - name: EXTRA
-      value: "-e sched:sched_switch -e sched:sched_wakeup -e sched:sched_migrate_task -e irq -e irq_vectors -e timer"
+      value: "-e sched:sched_switch -e sched:sched_wakeup -e sched:sched_migrate_task -e irq -e irq_vectors -e timer -e workqueue"
     - name: delay
-      value: "10"
+      value: "60"
     # # Following setting not required in OCP4.6+
     # - name: DISABLE_CPU_BALANCE
     #   value: "y"
